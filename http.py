@@ -53,13 +53,13 @@ class CommonRequest(object):
 		for c in range(RETRY):
 			try:
 				req = getattr(self.session, method)(*arg, **kwarg)
-				self.saveSession()
+				self.save_session()
 				return req
 			except RequestException, e:
 				logger.error(e)
 				logger.info('retry..')
 				
-	def saveSession(self):
+	def save_session(self):
 		pass
 
 	def create_session(self):
