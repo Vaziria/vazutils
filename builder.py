@@ -36,7 +36,7 @@ class Builder(object):
 	def copy_file(self, files):
 
 		for file in files:
-			print "copy %s"%file
+			print("copy %s"%file)
 			if file[-11:] == '.production':
 				distfile = self.dist_path + file[:-11]
 			else:
@@ -51,7 +51,7 @@ class Builder(object):
 
 	def create_dir_structure(self, folders):
 		for folder in folders:
-			print "copy %s"%folder
+			print("copy %s"%folder)
 			os.makedirs(self.dist_path + "/" + folder)
 
 	def create_empty_file(self, files):
@@ -63,7 +63,9 @@ class Builder(object):
 
 		with ZipFile(self.dist_path + filename, 'w') as ziper:
 
-			ziper.comment = "Commit Integrity: \n\n%s"%self.get_git_revision_hash()
+			comment = "Commit Integrity: \n\n{0} sdasd".format(self.get_git_revision_hash().decode('utf8'))
+
+			ziper.comment = comment.encode("utf8")
 
 			for root, dirnames, filenames in os.walk(self.dist_path):
 				root = root.replace(self.dist_path, '')
@@ -87,7 +89,7 @@ class Builder(object):
 				dest = file[1]
 				file = file[0]
 
-			print "\n\nbuilding %s"%file
+			print("\n\nbuilding %s"%file)
 
 			command = ["pyinstaller", "--onefile", file]
 			if thread:
@@ -96,7 +98,7 @@ class Builder(object):
 				buildexe = subprocess.call(command)
 
 			if buildexe == 1:
-				print "build %s gagal.."%file
+				print("build %s gagal.."%file)
 				return False
 
 			if bool(dest):
@@ -127,7 +129,8 @@ class Builder(object):
 
 
 	def get_git_revision_hash(self):
-		return subprocess.check_output(['git', 'rev-parse', 'HEAD'])
+		hasil = subprocess.check_output(['git', 'rev-parse', 'HEAD'])
+		return hasil
 
 	def get_git_revision_short_hash(self):
 		return subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD'])
@@ -145,11 +148,11 @@ class Builder(object):
 
 		hasil = subprocess.call(command, shell=True)
 		if hasil == 1:
-			print "build frontend gagal"
+			print("build frontend gagal")
 			exit()
 
 		os.chdir(oldpath)
-		print path + '/dist/' + path.split('/')[-1]
+		print(path + '/dist/' + path.split('/')[-1])
 		shutil.copytree(path + '/dist/' + path.split('/')[-1], self.dist_path + 'frontend/')
 		self.delete_all('frontend')
 		os.removedirs('frontend')

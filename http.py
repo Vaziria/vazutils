@@ -39,13 +39,13 @@ def Request(method = None, *arg, **kwarg):
 	for c in range(RETRY):
 		try:
 			return getattr(requests, method)(*arg, **kwarg)
-		except RequestException, e:
+		except RequestException as e:
 			logger.error(e)
 			logger.info('retry..')
 			
 			
 	
-class CommonRequest(object):
+class CommonRequest:
 	def CRequest(self, method = None, *arg, **kwarg):
 		if not method:
 			return self.session
@@ -55,7 +55,7 @@ class CommonRequest(object):
 				req = getattr(self.session, method)(*arg, **kwarg)
 				self.save_session()
 				return req
-			except RequestException, e:
+			except RequestException as e:
 				logger.error(e)
 				logger.info('retry..')
 				
@@ -79,5 +79,5 @@ class customSession(object):
 
 
 if __name__ == '__main__':
-	print Request('get', 'https://seller.shopee.co.id').text
+	print(Request('get', 'https://seller.shopee.co.id').text)
 	
