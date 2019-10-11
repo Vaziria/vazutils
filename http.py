@@ -47,13 +47,19 @@ def Request(method = None, *arg, **kwarg):
 	
 class CommonRequest:
 	def CRequest(self, method = None, *arg, **kwarg):
+
 		if not method:
 			return self.session
+
+		not_save  = kwarg.get('not_save', False)
+		if not_save:
+			del kwarg['not_save']
 
 		for c in range(RETRY):
 			try:
 				req = getattr(self.session, method)(*arg, **kwarg)
-				self.save_session()
+				if not not_save:
+					self.save_session()
 				return req
 			except RequestException as e:
 				logger.error(e)

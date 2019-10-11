@@ -20,13 +20,13 @@ class License(object):
 	
 	url = 'http://68.183.129.244:8001/v1/login'
 	
-	def getPayload(self, username, password):
+	def getPayload(self, username, password, bot_id = 1):
 		payload = {
 			'email': username,
 			'password': password,
 			'name': os.environ['COMPUTERNAME'],
 			'mac': str(get_mac()),
-			'bot_id': 1,
+			'bot_id': bot_id,
 			
 		}
 		
