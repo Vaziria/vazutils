@@ -6,11 +6,6 @@ from .packet import Packet
 
 logger = Logger(__name__)
 
-
-
-
-
-
 websocket.enableTrace(True)
 
 
@@ -23,6 +18,7 @@ class Client:
 		self.socket = websocket.WebSocketApp(*args, **kwargs)
 		self.socket.on_open = self._on_open
 		self.socket.on_message = self._recieve_packet
+		self.socket.on_close = self.on_disconnect
 		self.socket.run_forever()
 
 	def _on_open(self):
@@ -74,6 +70,9 @@ class Client:
 
 	def disconnect(self):
 		self.socket.send("1")
+
+	def on_disconnect(self):
+		self.get_event('disconnected')()
 
 
 	def _no_handler(self, *args, **kwrags):
