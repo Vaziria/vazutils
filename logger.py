@@ -3,7 +3,7 @@ import os
 import json
 import traceback
 import os
-
+from sentry_sdk.integrations.logging import ignore_logger
 
 _general_level = os.environ.get('godmode', 'info').upper()
 _logger_config_path = './data/logger.json'
@@ -44,6 +44,7 @@ def getLogLevel(name):
 	return _level.get(log_level)
 
 def Logger(name):
+	ignore_logger(name)
 	log_level = _module_logger_config.get(name, _general_level).upper()
 
 	logger = logging.getLogger(name)

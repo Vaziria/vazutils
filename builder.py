@@ -1,14 +1,30 @@
 import gevent
-from gevent import monkey
-monkey.patch_all()
-
-import gevent
 from gevent import Greenlet
 import subprocess
 import os
 import shutil
 from zipfile import ZipFile
-from itertools import cycle 
+from itertools import cycle
+import os
+
+from . import commongit
+
+
+def get_version(force = False):
+	version = 'versi anonim'
+	path = 'data/version'
+	if os.path.exists(path) and (not force):
+		with open(path, 'r') as out:
+			version = out.read().strip('\t').strip('\n')
+
+	else:
+		version = commongit.get_latest_tag()
+		with open(path, 'w+') as out:
+			out.write(version)
+
+
+	return version
+
 
 
 class Builder(object):
@@ -63,7 +79,7 @@ class Builder(object):
 
 		with ZipFile(self.dist_path + filename, 'w') as ziper:
 
-			comment = "Commit Integrity: \n\n{0} sdasd".format(self.get_git_revision_hash().decode('utf8'))
+			comment = "Commit Integrity: \n\n{0}".format(self.get_git_revision_hash().decode('utf8'))
 
 			ziper.comment = comment.encode("utf8")
 
