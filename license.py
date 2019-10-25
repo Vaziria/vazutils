@@ -5,6 +5,17 @@ import hashlib
 import json
 from datetime import datetime
 
+_host_endpoint = 'pdcoke.com'
+
+auth_mode = os.environ.get('godauth', False)
+if auth_mode == 'local':
+	_host_endpoint = 'localhost:8000'
+elif auth_mode:
+	_host_endpoint = auth_mode
+
+_url = 'http://{}/v1/login'.format(_host_endpoint)
+_url_v2 = 'http://{}/v2/login'.format(_host_endpoint)
+
 def generate_key():
 	date = datetime.utcnow().strftime('%Y-%m-%d|%I')
 		
@@ -16,9 +27,59 @@ def generate_key():
 
 	return cek
 
+_flow_config = [
+	'bot_config',
+	'member_config',
+]
+
+
 class License(object):
 	
-	url = 'http://68.183.129.244:8001/v1/login'
+	# url = 'http://pdcoke.com/v1/login'
+	url = _url
+	# url_v2 = 'http://pdcoke.com/v2/login'
+	url_v2 = _url_v2
+
+	config_data = {}
+
+
+	def v2_login(self, username, password, bot_id = 1):
+		payload = {
+			'email': username,
+			'password': password,
+			'name': os.environ['COMPUTERNAME'],
+			'mac': str(get_mac()),
+			'bot_id': bot_id,
+			
+		}
+
+		req = requests.post(self.url_v2, headers = {'Content-Type': 'aplication/json', 'Accept': 'aplication/json'}, data=json.dumps(payload))
+
+		if req.status_code == 200:
+			hasil = json.loads(req.text)
+
+			if hasil.get('checksum', False):
+				if self.cek(hasil.get('checksum')):
+					self.config_data.update(hasil)
+					return hasil
+
+		return False
+
+	def get_config(self):
+		hasil = {}
+
+		for key in _flow_config:
+			config = self.config_data.get(key, False)
+			if config:
+				try:
+					config = json.loads(config)
+					hasil.update(config)
+				except json.decoder.JSONDecodeError as e:
+					logger.error('SERVER CONFIG ERROR')
+
+
+		return hasil
+
 	
 	def getPayload(self, username, password, bot_id = 1):
 		payload = {
@@ -63,13 +124,17 @@ _license = License()
 	
 		
 if __name__ == '__main__':
+	from pprint import pprint
+
+	hasil = _license.v2_login('chat@auth.com', 'password', bot_id = 1)
 	
-	payload = license.getPayload('chat@auth.com', 'password')
+	pprint(hasil)
+	# payload = license.getPayload('chat@auth.com', 'password')
 
-	print(json.dumps(payload))
+	# print(json.dumps(payload))
 
-	auth = license.getData(payload)
-	print(auth.encode('utf-8'))
-	print(license.cek(auth))
+	# auth = license.getData(payload)
+	# print(auth.encode('utf-8'))
+	# print(license.cek(auth))
 	
 	
