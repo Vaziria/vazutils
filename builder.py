@@ -8,6 +8,9 @@ from itertools import cycle
 import os
 
 from . import commongit
+from .logger import Logger
+
+logger = Logger(__name__)
 
 
 def get_version(force = False):
@@ -30,10 +33,14 @@ def get_version(force = False):
 class Builder(object):
 
 	dist_path = './dist/'
+	gdrive_folderid = None
+	gdrive_bin = None
 
+	def __init__(self, dist_path, gdrive_folderid = None, gdrive_bin = None):
 
-	def __init__(self, dist_path):
 		self.dist_path = dist_path
+		self.gdrive_bin = gdrive_bin
+		self.gdrive_folderid = gdrive_folderid
 
 	def empty_dist(self, ignore = []):
 		dist_path = self.dist_path
