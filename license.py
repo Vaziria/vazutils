@@ -5,6 +5,10 @@ import hashlib
 import json
 from datetime import datetime
 
+from .logger import Logger
+
+logger = Logger(__name__)
+
 _host_endpoint = 'pdcoke.com'
 
 auth_mode = os.environ.get('godauth', False)
