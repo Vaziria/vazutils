@@ -13,22 +13,6 @@ from .logger import Logger
 logger = Logger(__name__)
 
 
-def get_version(force = False):
-	version = 'versi anonim'
-	path = 'data/version'
-	if os.path.exists(path) and (not force):
-		with open(path, 'r') as out:
-			version = out.read().strip('\t').strip('\n')
-
-	else:
-		version = commongit.get_latest_tag()
-		with open(path, 'w+') as out:
-			out.write(version)
-
-
-	return version
-
-
 
 class Builder(object):
 
@@ -193,3 +177,12 @@ class Builder(object):
 					os.unlink(file_object_path)
 			else:
 				shutil.rmtree(file_object_path)
+
+	def gdrive_upload(self, filename):
+
+		# my_env = { **os.environ }
+
+		command = ['gdrive', 'upload', '-p', self.gdrive_folderid, self.dist_path + filename ]
+		# print(command)
+
+		return subprocess.call(command, env = my_env)

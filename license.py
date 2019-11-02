@@ -47,14 +47,14 @@ class License(object):
 	config_data = {}
 
 
-	def v2_login(self, username, password, bot_id = 1):
+	def v2_login(self, username, password, bot_id = 1, version = 'unofficial'):
 		payload = {
 			'email': username,
 			'password': password,
 			'name': os.environ['COMPUTERNAME'],
 			'mac': str(get_mac()),
 			'bot_id': bot_id,
-			
+			'version': version
 		}
 
 		req = requests.post(self.url_v2, headers = {'Content-Type': 'aplication/json', 'Accept': 'aplication/json'}, data=json.dumps(payload))
