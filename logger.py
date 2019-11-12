@@ -51,7 +51,7 @@ def Logger(name):
 	# print(logger.handlers, name)
 	if(logger.hasHandlers()):
 		logger.handlers.clear()
-
+	logger.propagate = False
 	logger.setLevel(_level.get(log_level))
 	logger.addHandler(_sthandler)
 	logger.addHandler(_fhandler)
