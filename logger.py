@@ -48,6 +48,10 @@ def Logger(name):
 	log_level = _module_logger_config.get(name, _general_level).upper()
 
 	logger = logging.getLogger(name)
+	# print(logger.handlers, name)
+	if(logger.hasHandlers()):
+		logger.handlers.clear()
+
 	logger.setLevel(_level.get(log_level))
 	logger.addHandler(_sthandler)
 	logger.addHandler(_fhandler)
