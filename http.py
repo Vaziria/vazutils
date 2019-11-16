@@ -12,6 +12,14 @@ logger = Logger(__name__)
 RETRY = 4
 
 
+def get_ip(proxy = None):
+
+	if proxy:
+		return requests.get('http://ifconfig.me/ip', proxies=proxy).text
+	else:
+		return requests.get('http://ifconfig.me/ip').text
+
+
 def RequestWithRetry(
     retries = 20,
     backoff_factor=0.3,
