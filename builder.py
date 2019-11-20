@@ -122,9 +122,9 @@ class Builder(object):
 		for file in files:
 			next(point).append(file)
 
-		params = map(lambda x: gevent.spawn(self.build_exe, x, thread = True), params)
+		params = list(map(lambda x: gevent.spawn(self.build_exe, x, thread = True), params))
 
-		hasil = map(lambda x: x.value, gevent.joinall(params))
+		hasil = list(map(lambda x: x.value, gevent.joinall(params)))
 
 		if False in hasil:
 			exit()
