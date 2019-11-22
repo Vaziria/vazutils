@@ -43,11 +43,14 @@ class License(object):
 	url = _url
 	# url_v2 = 'http://pdcoke.com/v2/login'
 	url_v2 = _url_v2
-
+	version = "unofficial"
+	latest_version = None
 	config_data = {}
 
 
 	def v2_login(self, username, password, bot_id = 1, version = 'unofficial'):
+		self.version = version
+
 		payload = {
 			'email': username,
 			'password': password,
@@ -59,8 +62,14 @@ class License(object):
 
 		req = requests.post(self.url_v2, headers = {'Content-Type': 'aplication/json', 'Accept': 'aplication/json'}, data=json.dumps(payload))
 
+		if auth_mode == 'local':
+			logger.info(req.text)
+
 		if req.status_code == 200:
+
 			hasil = json.loads(req.text)
+
+			self.latest_version = hasil.get('latest_version')
 
 			if hasil.get('checksum', False):
 				if self.cek(hasil.get('checksum')):
@@ -77,12 +86,29 @@ class License(object):
 			if config:
 				try:
 					config = json.loads(config)
+
+					# cek sentry
+					self.strict_sentry_latest_version(config)
+
 					hasil.update(config)
 				except json.decoder.JSONDecodeError as e:
 					logger.error('SERVER CONFIG ERROR')
 
 
 		return hasil
+
+
+	def strict_sentry_latest_version(self, config):
+		cek = config.get('sentry_strict', False)
+
+		print(config.get('latest_version'))
+
+		if cek and (self.version != self.latest_version):
+			if 'sentry_dsn' in config:
+				del config['sentry_dsn']
+
+			if 'sentry' in config:
+				del config['sentry']
 
 	
 	def getPayload(self, username, password, bot_id = 1):
@@ -132,7 +158,7 @@ if __name__ == '__main__':
 
 	hasil = _license.v2_login('chat@auth.com', 'password', bot_id = 1)
 	
-	pprint(hasil)
+	pprint(_license.get_config())
 	# payload = license.getPayload('chat@auth.com', 'password')
 
 	# print(json.dumps(payload))
