@@ -47,6 +47,8 @@ class License(object):
 	latest_version = None
 	config_data = {}
 
+	session = requests.Session()
+
 
 	def v2_login(self, username, password, bot_id = 1, version = 'unofficial'):
 		self.version = version
@@ -60,7 +62,7 @@ class License(object):
 			'version': version
 		}
 
-		req = requests.post(self.url_v2, headers = {'Content-Type': 'aplication/json', 'Accept': 'aplication/json'}, data=json.dumps(payload))
+		req = self.session.post(self.url_v2, headers = {'Content-Type': 'aplication/json', 'Accept': 'aplication/json'}, data=json.dumps(payload))
 
 		if auth_mode == 'local':
 			logger.info(req.text)
@@ -141,6 +143,19 @@ class License(object):
 		
 	
 		return False
+
+	def me(self):
+
+		url = 'http://{}/v2/member/me'.format(_host_endpoint)
+
+		req = self.session.get(url, headers = {'Content-Type': 'aplication/json', 'Accept': 'aplication/json'})
+
+		if req.status_code == 200:
+			hasil = json.loads(req.text)
+
+			return hasil
+
+		return False
 	
 	
 		
@@ -158,7 +173,9 @@ if __name__ == '__main__':
 
 	hasil = _license.v2_login('chat@auth.com', 'password', bot_id = 1)
 	
-	pprint(_license.get_config())
+	pprint(_license.me())
+	# pprint(_license.get_config())
+
 	# payload = license.getPayload('chat@auth.com', 'password')
 
 	# print(json.dumps(payload))
