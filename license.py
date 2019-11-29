@@ -46,6 +46,7 @@ class License(object):
 	version = "unofficial"
 	latest_version = None
 	config_data = {}
+	headers = {'Content-Type': 'aplication/json', 'Accept': 'aplication/json'}
 
 	session = requests.Session()
 
@@ -156,7 +157,22 @@ class License(object):
 			return hasil
 
 		return False
-	
+
+	def get_notif(self):
+		url = 'http://www.mocky.io/v2/5dde2ae82f0000fe637ead66'
+
+		req = self.session.get(url, headers = self.headers)
+
+		if req.status_code == 200:
+			hasil = json.loads(req.text)
+			hasil = hasil.get('data')
+
+			return hasil
+		return []
+
+	def read_notif(self):
+		pass
+	 
 	
 		
 		
@@ -171,9 +187,10 @@ _license = License()
 if __name__ == '__main__':
 	from pprint import pprint
 
-	hasil = _license.v2_login('chat@auth.com', 'password', bot_id = 1)
+	# hasil = _license.v2_login('chat@auth.com', 'password', bot_id = 1)
 	
-	pprint(_license.me())
+	# pprint(_license.me())
+	pprint(_license.get_notif())
 	# pprint(_license.get_config())
 
 	# payload = license.getPayload('chat@auth.com', 'password')
