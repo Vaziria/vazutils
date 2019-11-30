@@ -164,7 +164,7 @@ class License(object):
 	def get_notif(self):
 		url = 'http://{}/v1/notification?bot={}'.format(_host_endpoint, self.bot_id)
 
-		req = self.session.get(url, headers = self.headers)
+		req = self.session.get(url)
 
 		if req.status_code == 200:
 			hasil = json.loads(req.text)
@@ -184,7 +184,7 @@ class License(object):
 			hasil = json.loads(req.text)
 			return True
 		else:
-			logger.info(req.status_code)
+			logger.error(req.status_code)
 			return False
 	 
 	
