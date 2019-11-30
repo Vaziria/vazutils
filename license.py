@@ -40,6 +40,7 @@ _flow_config = [
 class License(object):
 	
 	# url = 'http://pdcoke.com/v1/login'
+	bot_id = None
 	url = _url
 	# url_v2 = 'http://pdcoke.com/v2/login'
 	url_v2 = _url_v2
@@ -53,6 +54,8 @@ class License(object):
 
 	def v2_login(self, username, password, bot_id = 1, version = 'unofficial'):
 		self.version = version
+		if bot_id:
+			self.bot_id = bot_id
 
 		payload = {
 			'email': username,
@@ -159,19 +162,29 @@ class License(object):
 		return False
 
 	def get_notif(self):
-		url = 'http://www.mocky.io/v2/5dde2ae82f0000fe637ead66'
+		url = 'http://{}/v1/notification?bot={}'.format(_host_endpoint, self.bot_id)
 
 		req = self.session.get(url, headers = self.headers)
 
 		if req.status_code == 200:
 			hasil = json.loads(req.text)
 			hasil = hasil.get('data')
-
 			return hasil
+		else:
+			logger.info(req.text)
+
 		return []
 
 	def read_notif(self):
-		pass
+		url = 'http://{}/v1/notification/mark'.format(_host_endpoint)
+
+		req = self.session.put(url, headers = self.headers)
+
+		if req.status_code == 200:
+			hasil = json.loads(req.text)
+			return hasil
+
+		logger.info(req.text)
 	 
 	
 		
@@ -187,9 +200,10 @@ _license = License()
 if __name__ == '__main__':
 	from pprint import pprint
 
-	# hasil = _license.v2_login('chat@auth.com', 'password', bot_id = 1)
+	hasil = _license.v2_login('chat@auth.com', 'password', bot_id = 1)
 	
 	# pprint(_license.me())
+	pprint(_license.read_notif())
 	pprint(_license.get_notif())
 	# pprint(_license.get_config())
 
