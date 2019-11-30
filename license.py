@@ -176,15 +176,16 @@ class License(object):
 		return []
 
 	def read_notif(self):
-		url = 'http://{}/v1/notification/mark'.format(_host_endpoint)
+		url = 'http://{}/v2/notification/readall'.format(_host_endpoint)
 
-		req = self.session.put(url, headers = self.headers)
+		req = self.session.get(url, headers = self.headers)
 
 		if req.status_code == 200:
 			hasil = json.loads(req.text)
-			return hasil
-
-		logger.info(req.text)
+			return True
+		else:
+			logger.info(req.status_code)
+			return False
 	 
 	
 		
