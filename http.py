@@ -1,6 +1,6 @@
 import requests
 from requests import Request, Session
-from requests.exceptions import RequestException
+from requests.exceptions import RequestException, ConnectionError
 from requests import ConnectionError
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
@@ -54,6 +54,9 @@ def Request(method = None, *arg, **kwarg):
 			
 	
 class CommonRequest:
+	
+	http_always_close = False
+
 	def CRequest(self, method = None, *arg, **kwarg):
 
 		if not method:
@@ -68,9 +71,21 @@ class CommonRequest:
 				req = getattr(self.session, method)(*arg, **kwarg)
 				if not not_save:
 					self.save_session()
+
+				if self.http_always_close:
+					self.session.close()
+					
 				return req
+
+			except ConnectionError as e:
+				self.session.close()
+				self.on_reset()
+
+
 			except RequestException as e:
 				logger.error(e)
+				logger.error(arg)
+				logger.error(kwarg)
 				logger.info('retry..')
 				
 	def save_session(self):
@@ -78,7 +93,9 @@ class CommonRequest:
 
 	def create_session(self):
 		self.session = Session()
-				
+	
+	def on_reset(self):
+		logger.error('connection reset')
 
 	
 class customSession(object):
