@@ -49,8 +49,12 @@ def Logger(name):
 
 	logger = logging.getLogger(name)
 	# print(logger.handlers, name)
-	if(logger.hasHandlers()):
-		logger.handlers.clear()
+	try:
+		if(logger.hasHandlers()):
+			logger.handlers.clear()
+	except AttributeError as e:
+		pass
+		
 	logger.propagate = False
 	logger.setLevel(_level.get(log_level))
 	logger.addHandler(_sthandler)
