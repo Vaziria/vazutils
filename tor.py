@@ -6,7 +6,7 @@ from stem import Signal
 from stem.control import Controller
 import requests
 
-from gevent.subprocess import Popen, PIPE, CREATE_NEW_CONSOLE
+from subprocess import Popen, PIPE, CREATE_NEW_CONSOLE
 
 from .logger import Logger
 
@@ -38,6 +38,16 @@ class Tor:
 		self.fconfig = fconfig
 
 		self.generate_config(self.basedir, self.fconfig)
+
+
+	def get_proxies(self):
+
+		proxies = {
+			'http': 'socks5://127.0.0.1:{}'.format(self.listen_port),
+			'https': 'socks5://127.0.0.1:{}'.format(self.listen_port)
+		}
+
+		return proxies
 
 
 

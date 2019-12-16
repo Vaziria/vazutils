@@ -40,6 +40,14 @@ class TestTor(unittest.TestCase):
 
 		self.run()
 
+	def test_get_proxies(self):
+		hasil = self.tor.get_proxies()
+
+		for key, item in hasil.items():
+			
+			test = item.find(str(self.tor.listen_port)) != -1
+			self.assertTrue(test)
+
 
 
 	def  tearDown(self):
