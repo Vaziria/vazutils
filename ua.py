@@ -81,7 +81,7 @@ class RandomUa:
 		return random.choice(self.ua_list)
 
 
-_random_ua = RandomUa('data/ua.txt')
+_random_ua = RandomUa('data/user_agent.txt')
 
 
 if __name__ == '__main__':
