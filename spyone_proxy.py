@@ -1,4 +1,5 @@
 import re
+import random
 
 import requests
 
@@ -9,7 +10,7 @@ class SpyOne:
 	key_port = {}
 
 
-	def get(self, jum = 2):
+	def get(self, jum = 1):
 		url = "http://spys.one/en/http-proxy-list/"
 		payload = {
 		    'xpp': jum,
@@ -105,12 +106,27 @@ class SpyOne:
 					self.key_port[keys[0]] = int(values[0]) ^ self.key_port[values[1]]
 
 
+	def get_proxy(self):
+		prox = random.choice(self.proxies)
+
+		proxies = {
+		 "http": "{type}://{ip}:{port}".format(**prox),
+		 "https": "{type}://{ip}:{port}".format(**prox),
+		}
+
+		return proxies
+
+
 
 if __name__ == '__main__':
 
 	test = SpyOne()
 	test.get()
-	print(test.key_port)
+	prox = test.get_proxy() 
+	print(prox)
+	req = requests.get('https://ifconfig.me/ip', proxies = prox)
+
+	print(req.text)
 
 
 
