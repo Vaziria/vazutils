@@ -79,7 +79,7 @@ class CommonRequest:
 
 			except ConnectionError as e:
 				self.session.close()
-				self.on_reset()
+				self.on_reset(method = method, *arg, **kwarg)
 
 
 			except RequestException as e:
