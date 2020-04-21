@@ -3,7 +3,11 @@ import os
 import json
 import traceback
 import os
+from logging.handlers import RotatingFileHandler
 from sentry_sdk.integrations.logging import ignore_logger
+
+if not os.path.exists('./logs'):
+	os.makedirs('logs')
 
 _general_level = os.environ.get('godmode', 'info').upper()
 _logger_config_path = './data/logger.json'
@@ -35,7 +39,7 @@ _sthandler = logging.StreamHandler()
 _sthandler.setLevel(logging.DEBUG)
 _sthandler.setFormatter(formatter)
 
-_fhandler = logging.FileHandler('log', mode="w+")
+_fhandler = RotatingFileHandler('logs/log', mode="a", maxBytes=10485760, backupCount=5)
 _fhandler.setFormatter(file_formatter)
 _fhandler.setLevel(_level[_module_logger_config['logfile'].upper()])
 
