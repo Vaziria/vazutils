@@ -10,6 +10,7 @@ from .logger import Logger
 logger = Logger(__name__)
 
 RETRY = 4
+_time_out = 30 
 
 
 def get_ip(proxy = None):
@@ -65,6 +66,9 @@ class CommonRequest:
 		not_save  = kwarg.get('not_save', False)
 		if not_save:
 			del kwarg['not_save']
+
+		if not kwarg.get('timeout', None):
+			kwarg['timeout'] = _time_out
 
 		for c in range(RETRY):
 			try:
