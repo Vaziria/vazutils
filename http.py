@@ -10,7 +10,7 @@ from .logger import Logger
 logger = Logger(__name__)
 
 RETRY = 4
-_time_out = 30 
+_time_out = 120
 
 
 def get_ip(proxy = None):
