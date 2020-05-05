@@ -39,7 +39,7 @@ _sthandler = logging.StreamHandler()
 _sthandler.setLevel(logging.DEBUG)
 _sthandler.setFormatter(formatter)
 
-_fhandler = RotatingFileHandler('logs/log', mode="a", maxBytes=10485760, backupCount=5)
+_fhandler = RotatingFileHandler('logs/log', mode="a", maxBytes=7485760, backupCount=5)
 _fhandler.setFormatter(file_formatter)
 _fhandler.setLevel(_level[_module_logger_config['logfile'].upper()])
 
@@ -47,7 +47,8 @@ def getLogLevel(name):
 	log_level = _module_logger_config.get(name, _general_level).upper()
 	return _level.get(log_level)
 
-def Logger(name):
+
+def Logger(name, fname = None):
 	ignore_logger(name)
 	log_level = _module_logger_config.get(name, _general_level).upper()
 
@@ -61,8 +62,15 @@ def Logger(name):
 		
 	logger.propagate = False
 	logger.setLevel(_level.get(log_level))
+
+	# bagian file handlers
+	if fname:
+		filehandler = RotatingFileHandler(fname, mode="a", maxBytes=7485760, backupCount=5)
+	else:
+		filehandler = _fhandler
+
 	logger.addHandler(_sthandler)
-	logger.addHandler(_fhandler)
+	logger.addHandler(filehandler)
 
 	return logger
 

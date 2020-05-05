@@ -1,18 +1,19 @@
 import csv
 import os
 
+
 class ReportCsv:
 	data = {}
 	keys = []
 	key = ''
 	fname = ''
+	base_report = './reports/{}'
 
 	def __init__(self, fname, key, keys):
 		self.key = key
 		self.keys = keys
 		self.data = {}
-		self.fname = fname
-
+		self.fname = self.base_report.format(fname)
 
 	def add(self, obj):
 		idnya = obj[self.key]

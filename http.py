@@ -6,11 +6,13 @@ from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 
 from .logger import Logger 
+from .global_config import _config
+
+_http_config = _config.get('http')
 
 logger = Logger(__name__)
 
 RETRY = 4
-_time_out = 120
 
 
 def get_ip(proxy = None):
@@ -57,6 +59,7 @@ def Request(method = None, *arg, **kwarg):
 class CommonRequest:
 	
 	http_always_close = False
+	timeout = _http_config.get('timeout', 5)
 
 	def CRequest(self, method = None, *arg, **kwarg):
 
@@ -68,7 +71,7 @@ class CommonRequest:
 			del kwarg['not_save']
 
 		if not kwarg.get('timeout', None):
-			kwarg['timeout'] = _time_out
+			kwarg['timeout'] = self.timeout
 
 		for c in range(RETRY):
 			try:
@@ -87,18 +90,22 @@ class CommonRequest:
 
 
 			except RequestException as e:
+				self.on_connection_error()
 				logger.error(e)
 				logger.error(arg)
 				logger.error(kwarg)
 				logger.info('retry..')
 				
+	def on_connection_error(self):
+		pass
+
 	def save_session(self):
 		pass
 
 	def create_session(self):
 		self.session = Session()
 	
-	def on_reset(self):
+	def on_reset(self, method):
 		logger.error('connection reset')
 
 	
