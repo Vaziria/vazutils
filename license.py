@@ -171,7 +171,7 @@ class License(object):
 			hasil = hasil.get('data')
 			return hasil
 		else:
-			logger.info(req.text)
+			logger.error(req.text)
 
 		return []
 
