@@ -6,13 +6,15 @@ import os
 from logging.handlers import RotatingFileHandler
 from sentry_sdk.integrations.logging import ignore_logger
 
+log_fname = 'logs/log'
+
 if not os.path.exists('./logs'):
 	os.makedirs('logs')
 
 _general_level = os.environ.get('godmode', 'info').upper()
 _logger_config_path = './data/logger.json'
 _module_logger_config = {
-	'logfile': 'debug'
+	'logfile': 'debug',
 }
 
 
@@ -49,6 +51,10 @@ def getLogLevel(name):
 
 
 def Logger(name, fname = None):
+
+	if not fname:
+		fname = log_fname
+
 	ignore_logger(name)
 	log_level = _module_logger_config.get(name, _general_level).upper()
 
