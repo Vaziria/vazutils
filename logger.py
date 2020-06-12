@@ -6,7 +6,7 @@ import os
 from logging.handlers import RotatingFileHandler
 from sentry_sdk.integrations.logging import ignore_logger
 
-log_fname = 'logs/log'
+log_fname = os.environ.get('logfile', 'logs/log')
 
 if not os.path.exists('./logs'):
 	os.makedirs('logs')
@@ -41,7 +41,7 @@ _sthandler = logging.StreamHandler()
 _sthandler.setLevel(logging.DEBUG)
 _sthandler.setFormatter(formatter)
 
-_fhandler = RotatingFileHandler('logs/log', mode="a", maxBytes=7485760, backupCount=5)
+_fhandler = RotatingFileHandler(log_fname, mode="a", maxBytes=7485760, backupCount=5)
 _fhandler.setFormatter(file_formatter)
 _fhandler.setLevel(_level[_module_logger_config['logfile'].upper()])
 
@@ -70,10 +70,7 @@ def Logger(name, fname = None):
 	logger.setLevel(_level.get(log_level))
 
 	# bagian file handlers
-	if fname:
-		filehandler = RotatingFileHandler(fname, mode="a", maxBytes=7485760, backupCount=5)
-	else:
-		filehandler = _fhandler
+	filehandler = _fhandler
 
 	logger.addHandler(_sthandler)
 	logger.addHandler(filehandler)
