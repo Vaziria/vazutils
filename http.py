@@ -59,7 +59,6 @@ def Request(method = None, *arg, **kwarg):
 class CommonRequest:
 	
 	http_always_close = False
-	timeout = _http_config.get('timeout', 5)
 
 	def CRequest(self, method = None, *arg, **kwarg):
 
@@ -71,7 +70,7 @@ class CommonRequest:
 			del kwarg['not_save']
 
 		if not kwarg.get('timeout', None):
-			kwarg['timeout'] = self.timeout
+			kwarg['timeout'] = _http_config.get('timeout', 5)
 
 		for c in range(RETRY):
 			try:
