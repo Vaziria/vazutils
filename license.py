@@ -150,7 +150,7 @@ class License(object):
 
 	def me(self):
 
-		url = 'http://{}/v2/member/me'.format(_host_endpoint)
+		url = '{}/v2/member/me'.format(_host_endpoint)
 
 		req = self.session.get(url, headers = {'Content-Type': 'aplication/json', 'Accept': 'aplication/json'})
 
@@ -162,7 +162,7 @@ class License(object):
 		return False
 
 	def get_notif(self):
-		url = 'http://{}/v1/notification?bot={}'.format(_host_endpoint, self.bot_id)
+		url = '{}/v1/notification?bot={}'.format(_host_endpoint, self.bot_id)
 
 		req = self.session.get(url)
 
@@ -176,7 +176,7 @@ class License(object):
 		return []
 
 	def read_notif(self):
-		url = 'http://{}/v2/notification/readall'.format(_host_endpoint)
+		url = '{}/v2/notification/readall'.format(_host_endpoint)
 
 		req = self.session.get(url, headers = self.headers)
 
