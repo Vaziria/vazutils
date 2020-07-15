@@ -9,16 +9,16 @@ from .logger import Logger
 
 logger = Logger(__name__)
 
-_host_endpoint = 'pdcoke.com'
+_host_endpoint = 'https://pdcoke.com'
 
 auth_mode = os.environ.get('godauth', False)
 if auth_mode == 'local':
-	_host_endpoint = 'localhost:8000'
+	_host_endpoint = 'http://localhost:8000'
 elif auth_mode:
 	_host_endpoint = auth_mode
 
-_url = 'http://{}/v1/login'.format(_host_endpoint)
-_url_v2 = 'http://{}/v2/login'.format(_host_endpoint)
+_url = '{}/v1/login'.format(_host_endpoint)
+_url_v2 = '{}/v2/login'.format(_host_endpoint)
 
 def generate_key():
 	date = datetime.utcnow().strftime('%Y-%m-%d|%I')
