@@ -1,4 +1,5 @@
 import re
+from uuid import uuid4
 import random
 
 import requests
@@ -12,15 +13,28 @@ class SpyOne:
 
 	def get(self, jum = 1):
 		url = "http://spys.one/en/http-proxy-list/"
+
+		token = str(uuid4()).replace('-', '')
+
 		payload = {
+			'xx0': token,
 		    'xpp': jum,
-		    'xf1': 0,
+		    'xf1': 4,
 		    'xf2': 0,
 		    'xf4': 0,
-		    'xf5': 0,
+		    'xf5': 1,
 		}
 
-		req = requests.post(url, data = payload)
+		headers = {
+			'Host': 'spys.one',
+			'Origin': 'http://spys.one',
+			'Pragma': 'no-cache',
+			'Referer': 'http://spys.one/en/http-proxy-list/',
+			'Upgrade-Insecure-Requests': '1',
+			'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36',
+		}
+
+		req = requests.post(url, data = payload, headers = headers)
 		if req.status_code:
 
 			self.parse_port_key(req.text)
@@ -70,7 +84,7 @@ class SpyOne:
 
 
 	def get_proc_type(self, text):
-		if text.find('en/https-ssl-proxy/') == -1:
+		if text.find('en/https-ssl-proxy/') != -1:
 			return 'https'
 		else:
 			return 'http'
@@ -106,15 +120,20 @@ class SpyOne:
 					self.key_port[keys[0]] = int(values[0]) ^ self.key_port[values[1]]
 
 
-	def get_proxy(self):
+	def get_proxy(self, strformat = False):
 		prox = random.choice(self.proxies)
 
-		proxies = {
-		 "http": "{type}://{ip}:{port}".format(**prox),
-		 "https": "{type}://{ip}:{port}".format(**prox),
-		}
+		if strformat:
+			return "{type}://{ip}:{port}".format(**prox)
 
-		return proxies
+		else:
+
+			proxies = {
+			 "http": "{type}://{ip}:{port}".format(**prox),
+			 "https": "{type}://{ip}:{port}".format(**prox),
+			}
+
+			return proxies
 
 
 
@@ -122,6 +141,7 @@ if __name__ == '__main__':
 
 	test = SpyOne()
 	test.get()
+	print(test.proxies[:10])
 	prox = test.get_proxy() 
 	print(prox)
 	req = requests.get('https://ifconfig.me/ip', proxies = prox)
